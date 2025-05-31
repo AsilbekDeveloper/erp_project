@@ -1,0 +1,220 @@
+.expenses-main {
+  max-width: 950px;
+  margin: 0 auto;
+  padding: 32px 16px;
+}
+
+.expenses-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.primary-btn, .secondary-btn {
+  display: inline-block;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  font-size: 1rem;
+}
+
+.primary-btn {
+  background: #2684ff;
+  color: #fff;
+  border: none;
+}
+.primary-btn:hover {
+  background: #125bcc;
+}
+.secondary-btn {
+  background: #f3f4f6;
+  color: #313244;
+  border: 1px solid #d6d6df;
+}
+.secondary-btn:hover {
+  background: #e5e7eb;
+}
+
+/* --- MODERN TABLE-ACTION BUTTONS --- */
+.table-action {
+  display: inline-block;
+  padding: 6px 18px;
+  border-radius: 7px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  background: #f4f8fd;
+  color: #2563eb;
+  border: 1px solid #e5e7eb;
+  margin-right: 7px;
+  transition: background 0.18s, color 0.18s, border 0.18s, box-shadow 0.13s;
+  box-shadow: 0 1px 4px rgba(36,37,39,0.07);
+  position: relative;
+  outline: none;
+}
+.table-action:active {
+  box-shadow: 0 0 0 3px #c3e2ff88;
+}
+.table-action:hover, .table-action:focus {
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
+}
+.table-action.danger {
+  background: #fff6f6;
+  color: #d90429;
+  border: 1px solid #ffe0e0;
+  margin-right: 0;
+}
+.table-action.danger:hover, .table-action.danger:focus {
+  background: #d90429;
+  color: #fff;
+  border-color: #d90429;
+}
+
+/* TABLE & GENERAL STYLING */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 10px rgba(36,37,39,0.06);
+}
+.table th, .table td {
+  padding: 14px 13px;
+  text-align: left;
+  border-bottom: 1px solid #f1f1f7;
+}
+.table th {
+  background: #f3f4f6;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #26324b;
+}
+.table tr:last-child td {
+  border-bottom: none;
+}
+.table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.table-tools {
+  margin-bottom: 12px;
+}
+.search-input {
+  padding: 9px 12px;
+  width: 250px;
+  border-radius: 7px;
+  border: 1px solid #d3d3e4;
+  background: #f8fafc;
+  font-size: 1rem;
+}
+
+/* FORM & CARDS */
+.form-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 1px 8px rgba(36,37,39,0.07);
+  padding: 32px 26px;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+.form-group label {
+  display: block;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 7px;
+}
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 10px;
+  font-size: 1.05rem;
+  border-radius: 7px;
+  border: 1px solid #d3d3e4;
+  background: #f8fafc;
+  transition: border 0.2s;
+}
+.form-group input:focus, .form-group select:focus {
+  outline: none;
+  border-color: #2684ff;
+}
+.input-error {
+  color: #e74c3c;
+  font-size: 0.93rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* PAGINATION */
+.pagination {
+  margin: 22px 0 0 0;
+  text-align: right;
+}
+.pagination a, .pagination span {
+  margin: 0 2px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  background: #f1f5f9;
+  color: #212943;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  text-decoration: none;
+}
+.pagination span.active, .pagination a:hover, .pagination a:focus {
+  background: #2684ff;
+  color: #fff;
+}
+
+@media (max-width: 700px) {
+  .expenses-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .expenses-main {
+    padding: 12px 5px;
+  }
+  .form-card {
+    padding: 18px 6px;
+  }
+  .table th, .table td {
+    padding: 8px 5px;
+    font-size: 0.97rem;
+  }
+  .table-action, .table-action.danger {
+    padding: 5px 11px;
+    font-size: 0.95rem;
+  }
+}
+
+
+/* --- TABLE ACTIONS FLEX LAYOUT --- */
+.actions-cell {
+  display: flex;
+  gap: 7px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* .table-action class ni o'zgartirish shart emas, lekin agar margin-right bor bo'lsa olib tashlang: */
+.table-action {
+  /* ... */
+  margin-right: 0; /* or remove this line if present */
+}

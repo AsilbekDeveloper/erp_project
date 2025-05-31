@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Logged Out</title>
+    <link rel="stylesheet" href="{% static 'css/common.css' %}">
+    <meta http-equiv="refresh" content="2; url={% url 'login' %}">
+    <style>
+        .logout-msg {
+            max-width: 400px;
+            margin: 80px auto;
+            padding: 44px 28px;
+            background: #fff;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 2px 16px rgba(36, 37, 39, 0.08);
+        }
+        .logout-msg h2 {
+            color: #2559c7;
+            margin-bottom: 14px;
+            font-weight: 700;
+            font-size: 2rem;
+        }
+        .primary-btn {
+            margin-top: 26px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="logout-msg">
+        <h2>You have been logged out</h2>
+        <div>
+            <a href="{% url 'login' %}" class="primary-btn">Login again</a>
+        </div>
+        <p style="margin-top:10px;font-size:0.96rem;color:#666;">Redirecting to login...</p>
+    </div>
+</body>
+</html>

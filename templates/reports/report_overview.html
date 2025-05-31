@@ -1,0 +1,121 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Analytics Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{% static 'css/common.css' %}">
+  <link rel="stylesheet" href="{% static 'css/reports.css' %}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+  {% include "partials/sidebar.html" %}
+
+  <div class="dashboard-container">
+    <header class="header-section">
+      <div class="header-content">
+        <div>
+          <h1 class="header-title">Analytics Dashboard</h1>
+          <p class="header-subtitle">Real-time business insights and performance metrics</p>
+        </div>
+        <a href="{% url 'report_sales_csv' %}" class="export-btn" download>
+          <span>📊</span> Export Report
+        </a>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-label">Total Revenue</div>
+          <div class="metric-value" id="totalRevenue">
+            {{ total_sales|floatformat:2|default:"—" }} $
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Total Orders</div>
+          <div class="metric-value" id="totalOrders">
+            {{ order_count|default:"—" }}
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Growth Rate</div>
+          <div class="metric-value" id="growthRate">+23.5%</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Net Profit</div>
+          <div class="metric-value" id="netProfit">$89,456</div>
+        </div>
+      </section>
+
+      <div class="charts-container">
+        <section class="chart-section">
+          <div class="chart-header">
+            <h2 class="chart-title">Monthly Performance Overview</h2>
+            <span class="chart-period">{{ now|date:'Y' }}</span>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="monthlyChart"></canvas>
+          </div>
+          <div class="stats-row">
+            <div class="stat-item">
+              <div class="stat-label">Avg Monthly Sales</div>
+              <div class="stat-value">$20,658</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Best Month</div>
+              <div class="stat-value">October</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Growth Trend</div>
+              <div class="stat-value">+18.2%</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="chart-section">
+          <div class="chart-header">
+            <h2 class="chart-title">Annual Trends & Forecasts</h2>
+            <span class="chart-period">Multi-Year View</span>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="yearlyChart"></canvas>
+          </div>
+          <div class="stats-row">
+            <div class="stat-item">
+              <div class="stat-label">YoY Growth</div>
+              <div class="stat-value">+31.7%</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Profit Margin</div>
+              <div class="stat-value">36.1%</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Forecast 2025</div>
+              <div class="stat-value">$325K</div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="loading-spinner" id="loadingSpinner"></div>
+
+  <script>
+    // Backend dan data
+    const monthlyData = {
+      sales: {{ monthly_data|safe }},
+      expenses: {{ monthly_expenses_data|safe }}
+    };
+
+    const yearlyData = {
+      labels: {{ yearly_labels|safe }},
+      sales: {{ yearly_data|safe }},
+      expenses: {{ yearly_expenses_data|safe }}
+    };
+  </script>
+  <script src="{% static 'js/reports.js' %}"></script>
+</body>
+</html>

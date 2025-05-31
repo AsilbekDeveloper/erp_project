@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sales Orders</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{% static 'css/common.css' %}">
+  <link rel="stylesheet" href="{% static 'css/sales.css' %}">
+</head>
+<body>
+  {% include "partials/sidebar.html" %}
+
+  <main class="sales-main">
+    <div class="sales-header">
+      <h1>Sales Orders</h1>
+      <a href="{% url 'saleorder_create' %}" class="primary-btn">+ Add Sale Order</a>
+    </div>
+    <div class="table-tools">
+      <form method="get" style="display:inline;">
+        <input type="text" name="q" value="{{ request.GET.q }}" class="search-input" placeholder="Search order...">
+        <button type="submit" style="display:none;"></button>
+      </form>
+    </div>
+    <table class="table" id="orderTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Customer</th>
+          <th>Cashier</th>
+          <th>Total</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in object_list %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ order.customer }}</td>
+          <td>{{ order.cashier }}</td>
+          <td>${{ order.total|floatformat:2 }}</td>
+          <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+<td>
+  <div class="action-links">
+    <a href="{% url 'saleorder_detail' order.id %}" class="action-btn detail-btn">Detail</a>
+{#    <a href="{% url 'saleorder_update' order.id %}" class="action-btn edit-btn">Edit</a>#}
+    <a href="{% url 'saleorder_delete' order.id %}" class="action-btn delete-btn">Delete</a>
+  </div>
+</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" style="text-align:center; color:#888;">No orders found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </main>
+  <div id="alert-container"></div>
+</body>
+</html>
+
+
+
+

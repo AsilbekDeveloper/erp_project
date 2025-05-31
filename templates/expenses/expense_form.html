@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% if object %}Edit{% else %}Add{% endif %} Expense</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{% static 'css/common.css' %}">
+  <link rel="stylesheet" href="{% static 'css/expenses.css' %}">
+</head>
+<body>
+  {% include "partials/sidebar.html" %}
+  <main class="expenses-main">
+    <div class="form-card">
+      <h1>{% if object %}Edit{% else %}Add{% endif %} Expense</h1>
+      <form method="post" autocomplete="off">
+        {% csrf_token %}
+        <!-- CATEGORY -->
+        <div class="form-group">
+          <label for="id_category">Category</label>
+          <select name="category" id="id_category" class="form-select" required>
+            <option value="">--------</option>
+            {% for c in categories %}
+              <option value="{{ c.id }}" {% if form.category.value|stringformat:"s" == c.id|stringformat:"s" %}selected{% endif %}>
+                {{ c.name }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        <!-- PRODUCT -->
+        <div class="form-group">
+          <label for="id_product">Product</label>
+          <select name="product" id="id_product" class="form-select" required>
+            <option value="">--------</option>
+            <!-- JS orqali to‘ldiriladi -->
+          </select>
+        </div>
+        <!-- AMOUNT -->
+        <div class="form-group">
+          <label for="id_amount">Amount</label>
+          {{ form.amount }}
+        </div>
+        <!-- NOTE -->
+        <div class="form-group">
+          <label for="id_note">Note</label>
+          {{ form.note }}
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="primary-btn">Save</button>
+          <a href="{% url 'expense_list' %}" class="secondary-btn">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </main>
+  <div id="alert-container"></div>
+  <script>
+const productsByCat = {{ products_by_cat|safe }};
+const catSel = document.getElementById('id_category');
+const prodSel = document.getElementById('id_product');
+const selectedProduct = "{{ form.product.value|stringformat:'s' }}";
+const selectedCategory = "{{ form.category.value|stringformat:'s' }}";
+
+// Product selectini yangilash va to‘g‘ri qiymatni tanlash
+function updateProducts() {
+  const catId = catSel.value;
+  prodSel.innerHTML = '<option value="">--------</option>';
+  if (catId && productsByCat[catId]) {
+    productsByCat[catId].forEach(function(p) {
+      const selected = (p.id.toString() === selectedProduct) ? 'selected' : '';
+      prodSel.innerHTML += `<option value="${p.id}" ${selected}>${p.name}</option>`;
+    });
+    // Edit holatida selectedProduct bo‘lsa, uni tanla
+    if (selectedProduct) {
+      prodSel.value = selectedProduct;
+    }
+  }
+}
+
+// Category select o‘zgarsa — productlarni yangila va bo‘sh qiladi
+catSel.addEventListener('change', function() {
+  updateProducts();
+  prodSel.value = "";
+});
+
+// Sahifa yuklanganda (edit/new uchun ham)
+window.addEventListener('DOMContentLoaded', function() {
+  // Edit holatida category ham product ham tanlangan bo‘lishi uchun
+  if (selectedCategory) {
+    catSel.value = selectedCategory;
+  }
+  updateProducts();
+});
+  </script>
+</body>
+</html>

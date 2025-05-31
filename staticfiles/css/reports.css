@@ -1,0 +1,137 @@
+.reports-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 36px 24px 54px 24px;
+  margin-left: 230px; /* Increased from 220px to shift content more to the right */
+  box-sizing: border-box;
+}
+
+.reports-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.primary-btn {
+  display: inline-block;
+  padding: 11px 26px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  background: #2684ff;
+  color: #fff;
+  border: none;
+  transition: background 0.2s;
+  font-size: 1.09rem;
+}
+.primary-btn:hover {
+  background: #125bcc;
+}
+
+.kpi-cards {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 32px;
+  padding-left: 10px; /* Added small padding to align with charts */
+}
+.kpi-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 1px 10px rgba(36,37,39,0.09);
+  padding: 32px 34px;
+  min-width: 185px;
+}
+.kpi-label {
+  font-size: 1.13rem;
+  color: #9ca3af;
+  margin-bottom: 7px;
+}
+.kpi-value {
+  font-size: 2.25rem;
+  color: #2684ff;
+  font-weight: 700;
+}
+
+/* CHART SECTION - horizontal layout */
+.charts-section {
+  display: flex;
+  flex-direction: row; /* Charts side by side */
+  gap: 24px;
+  width: 100%;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  justify-content: center; /* Center the charts */
+  padding: 0 10px; /* Add slight padding */
+}
+.chart-box {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 1px 10px rgba(36,37,39,0.09);
+  padding: 32px 20px 38px 24px;
+  width: calc(50% - 12px); /* Each chart takes up half the width minus gap */
+  min-width: 300px;
+  box-sizing: border-box;
+}
+.chart-box h3 {
+  font-size: 1.43rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #333;
+}
+
+/* Ensure each chart has appropriate sizing */
+.chart-container {
+  width: 100%;
+  height: auto;
+}
+
+/* Content wrapper with slight shift right */
+.content-wrapper {
+  padding-left: 10px; /* Slight nudge right */
+}
+
+/* Responsive: Mobile friendly */
+@media (max-width: 1100px) {
+  .charts-section {
+    flex-direction: column; /* Stack charts vertically on smaller screens */
+  }
+
+  .chart-box {
+    width: 100%; /* Full width on smaller screens */
+  }
+}
+
+@media (max-width: 900px) {
+  .reports-main {
+    margin-left: 0;
+    padding: 16px 12px;
+  }
+
+  .reports-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .kpi-cards {
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+  }
+
+  .kpi-card {
+    width: 100%;
+    padding: 24px 20px;
+  }
+
+  .chart-box {
+    padding: 20px 12px;
+    border-radius: 12px;
+  }
+
+  .chart-box h3 {
+    margin-bottom: 16px;
+    font-size: 1.2rem;
+  }
+}

@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Profile</title>
+  <link rel="stylesheet" href="{% static 'css/common.css' %}">
+  <link rel="stylesheet" href="{% static 'css/users.css' %}">
+</head>
+<body>
+  {% include "partials/sidebar.html" %}
+  <main class="users-main">
+    <div class="profile-card-modern">
+   <div class="profile-avatar-block">
+  {% if user.avatar %}
+    <img src="{{ user.avatar.url }}" alt="avatar" class="profile-avatar-img">
+  {% else %}
+    <img src="{% static 'img/user.svg' %}" alt="avatar" class="profile-avatar-img">
+  {% endif %}
+</div>
+      <div class="profile-details">
+        <h2 class="profile-fullname">
+          {{ user.get_full_name|default:user.username }}
+        </h2>
+        <div class="profile-role-badge">{{ user.get_role_display|default:user.role }}</div>
+        <div class="profile-meta-list">
+          <div>
+            <span class="profile-meta-label">Username:</span>
+            <span>{{ user.username }}</span>
+          </div>
+          <div>
+            <span class="profile-meta-label">Email:</span>
+            <span>{{ user.email|default:"—" }}</span>
+          </div>
+          <div>
+            <span class="profile-meta-label">Phone:</span>
+            <span>{{ user.phone|default:"—" }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

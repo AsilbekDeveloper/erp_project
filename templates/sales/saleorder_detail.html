@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Detail</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{% static 'css/common.css' %}">
+  <link rel="stylesheet" href="{% static 'css/sales.css' %}">
+  <style>
+    .order-detail { background: #fff; border-radius: 14px; padding: 32px 38px; margin: 32px auto; max-width: 720px; box-shadow: 0 3px 18px #d5e5f733; }
+    .order-detail h1 { font-size: 2.1rem; margin-bottom: 18px; }
+    .order-detail .order-meta { display: flex; flex-wrap: wrap; gap: 32px 44px; margin-bottom: 15px; font-size: 1.09rem;}
+    .order-detail .order-meta span { color: #20252b; }
+    .order-detail .order-meta strong { font-weight: 500; }
+    .order-detail .order-note { background: #f8fafd; border-left: 3px solid #3274d8; margin-bottom: 18px; padding: 8px 15px; border-radius: 6px;}
+    .order-detail .order-note span:first-child { font-weight: 500; color:#576a86; margin-right:10px;}
+    .order-detail table { width: 100%; margin-bottom: 0; border-collapse: collapse;}
+    .order-detail th, .order-detail td { padding: 8px 12px; border-bottom: 1px solid #eaeaea;}
+    .order-detail th { background: #f8fafd; font-weight: 600;}
+    .order-detail tfoot td { background: #fffbe8;}
+    @media (max-width: 700px) {
+      .order-detail { padding: 16px 2vw; }
+      .order-detail h1 { font-size: 1.3rem; }
+      .order-detail .order-meta { flex-direction: column; gap: 8px;}
+    }
+  </style>
+</head>
+<body>
+  {% include "partials/sidebar.html" %}
+  <main class="sales-main">
+    <div class="order-detail">
+      <h1>Sale Order <span style="color:#3a6fd8;">#{{ order.id }}</span></h1>
+      <div class="order-meta">
+        <span>Customer: <strong>{{ order.customer }}</strong></span>
+        <span>Cashier: <strong>{{ order.cashier }}</strong></span>
+        <span>Date: <strong>{{ order.created_at|date:"Y-m-d H:i" }}</strong></span>
+      </div>
+      <div class="order-note">
+        <span>Note:</span>
+        <span>{{ order.note|default:"-" }}</span>
+      </div>
+      <table class="table" id="orderDetailTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for line in order.lines.all %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ line.product }}</td>
+            <td>{{ line.quantity }}</td>
+            <td>${{ line.price|floatformat:2 }}</td>
+            <td>${{ line.subtotal|floatformat:2 }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" style="text-align:center; color:#888;">No items found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4" style="text-align:right;font-weight:600">Total</td>
+            <td style="font-weight:600">${{ order.total|floatformat:2 }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </main>
+  <div id="alert-container"></div>
+</body>
+</html>

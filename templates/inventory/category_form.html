@@ -1,0 +1,37 @@
+{# templates/inventory/category_form.html #}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Category</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{% static 'css/common.css' %}">
+  <link rel="stylesheet" href="{% static 'css/inventory.css' %}">
+</head>
+<body>
+  {% include "partials/sidebar.html" %}
+  <main class="inventory-main">
+    <div class="form-card">
+      <h1 id="catFormTitle">
+        {% if form.instance.pk %}Edit{% else %}Add{% endif %} Category
+      </h1>
+      <form method="post" autocomplete="off">
+        {% csrf_token %}
+        <div class="form-group">
+          {{ form.name.label_tag }}
+          {{ form.name }}
+          {% if form.name.errors %}
+            <span class="input-error">{{ form.name.errors.0 }}</span>
+          {% endif %}
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="primary-btn">Save</button>
+          <a href="{% url 'inv_category_list' %}" class="secondary-btn">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </main>
+  <div id="alert-container"></div>
+</body>
+</html>

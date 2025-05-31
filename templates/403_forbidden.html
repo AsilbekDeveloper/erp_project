@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ruxsat Yo‘q</title>
+    <link rel="stylesheet" href="{% static 'css/common.css' %}">
+    <style>
+        .forbidden-box {
+            max-width: 410px;
+            margin: 70px auto;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 2px 18px rgba(36,37,39,0.08);
+            padding: 45px 24px;
+            text-align: center;
+        }
+        .forbidden-box h1 {
+            font-size: 2.3rem;
+            color: #dc2626;
+            margin-bottom: 16px;
+        }
+        .forbidden-box p {
+            color: #293044;
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+        }
+        .primary-btn {
+            margin-top: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="forbidden-box">
+        <h1>🚫 Ruxsat yo‘q</h1>
+        <p>Sizda ushbu sahifaga kirishga ruxsat yo‘q.</p>
+        <a href="/" class="primary-btn">Bosh sahifaga qaytish</a>
+    </div>
+</body>
+</html>

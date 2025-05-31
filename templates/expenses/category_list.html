@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Expense Categories</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{% static 'css/common.css' %}">
+  <link rel="stylesheet" href="{% static 'css/expenses.css' %}">
+</head>
+<body>
+  {% include "partials/sidebar.html" %}
+
+  <main class="expenses-main">
+    <div class="expenses-header">
+      <h1>Expense Categories</h1>
+      <a href="{% url 'category_create' %}" class="primary-btn">+ Add Category</a>
+    </div>
+    <div class="table-tools">
+      <form method="get" style="display:inline;">
+        <input type="text" name="q" value="{{ request.GET.q }}" class="search-input" placeholder="Search category...">
+        <button type="submit" style="display:none;"></button>
+      </form>
+    </div>
+    <table class="table" id="categoryTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Category Name</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cat in categories %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ cat.name }}</td>
+          <td>{{ cat.created_at|date:"Y-m-d H:i" }}</td>
+          <td>
+            <a href="{% url 'category_update' cat.id %}" class="table-action">Edit</a>
+            <a href="{% url 'category_delete' cat.id %}" class="table-action danger">Delete</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" style="text-align:center; color:#888;">No categories found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <!-- Pagination bo'lsa, backenddan paginate qilib chiqing -->
+    {% if is_paginated %}
+    <div id="categoryPagination" class="pagination">
+      {% if page_obj.has_previous %}
+      <a href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}">Previous</a>
+      {% endif %}
+      <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+      <a href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}">Next</a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </main>
+  <div id="alert-container"></div>
+  <script src="{% static 'js/common.js' %}"></script>
+  <script src="{% static 'js/expenses.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Product</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{% static 'css/common.css' %}">
+  <link rel="stylesheet" href="{% static 'css/inventory.css' %}">
+  <style>
+    .modal { position: fixed; z-index: 9999; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,.3); display:none; align-items:center; justify-content:center;}
+    .modal-content { background: #fff; border-radius: 8px; padding: 24px; min-width: 320px; position:relative;}
+    .close { position:absolute; right:12px; top:12px; cursor:pointer; font-size:24px; }
+  </style>
+</head>
+<body>
+  {% include "partials/sidebar.html" %}
+  <main class="inventory-main">
+    <div class="form-card">
+      <h1 id="prodFormTitle">Add Product</h1>
+      <form method="post" enctype="multipart/form-data" autocomplete="off">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="form-group">
+          <label for="id_sku">SKU</label>
+          {{ form.sku }}{{ form.sku.errors }}
+        </div>
+        <div class="form-group">
+          <label for="id_name">Name</label>
+          {{ form.name }}{{ form.name.errors }}
+        </div>
+        <div class="form-group">
+          <label for="id_category">Category</label>
+          <div style="display:flex;gap:7px;">
+            {{ form.category }}
+            <button type="button" id="addCategoryBtn" class="primary-btn" style="padding:0 10px;">+</button>
+          </div>
+          {{ form.category.errors }}
+        </div>
+        <div class="form-group">
+          <label for="id_cost_price">Cost Price</label>
+          {{ form.cost_price }}{{ form.cost_price.errors }}
+        </div>
+        <div class="form-group">
+          <label for="id_sell_price">Sell Price</label>
+          {{ form.sell_price }}{{ form.sell_price.errors }}
+        </div>
+        <div class="form-group">
+          <label for="id_size">Size</label>
+          {{ form.size }}{{ form.size.errors }}
+        </div>
+        <div class="form-group">
+          <label for="id_color">Color</label>
+          {{ form.color }}{{ form.color.errors }}
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="primary-btn">Save</button>
+          <a href="{% url 'product_list' %}" class="secondary-btn">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </main>
+  <!-- Modal for adding category -->
+  <div id="addCatModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeCatModal">&times;</span>
+      <h2>Add New Category</h2>
+      <input type="text" id="newCatName" placeholder="Category name" class="input">
+      <button id="saveNewCat" class="primary-btn" style="margin-top: 10px;">Save</button>
+      <div id="catAddErr" class="input-error"></div>
+    </div>
+  </div>
+  <script src="{% static 'js/product_form.js' %}"></script>
+</body>
+</html>

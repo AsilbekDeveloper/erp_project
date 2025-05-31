@@ -1,0 +1,17 @@
+# Django, Python, OS
+venv/
+__pycache__/
+*.pyc
+db.sqlite3
+
+# IDE/editor
+.idea/
+.vscode/
+.env
+
+# Media/static
+media/
+*.log
+
+# MacOS
+.DS_Store

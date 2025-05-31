@@ -1,0 +1,74 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ERP Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{% static 'css/common.css' %}">
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  {# Sidebar partial (TEMPLATE sifatida chaqiriladi) #}
+    {% include "partials/sidebar.html" %}
+
+
+  <main class="dashboard-main">
+    <section class="dashboard-top">
+      <form id="statsFilterForm" class="year-filter">
+        <label for="yearSelect">Year:</label>
+        <select id="yearSelect" name="year">
+          <!-- JS orqali yillar qo'yiladi -->
+        </select>
+      </form>
+    </section>
+    <section class="kpi-cards">
+      <div class="kpi-card" id="kpi-products">
+        <div class="kpi-label">Products</div>
+        <div class="kpi-value" id="productCnt">-</div>
+      </div>
+      <div class="kpi-card" id="kpi-stock">
+        <div class="kpi-label">Stock</div>
+        <div class="kpi-value" id="stockCnt">-</div>
+      </div>
+      <div class="kpi-card" id="kpi-sales">
+        <div class="kpi-label">Total Sales</div>
+        <div class="kpi-value" id="totalSales">-</div>
+      </div>
+    </section>
+    <section class="charts-section">
+      <div class="chart-box">
+        <h3>Sales by Category</h3>
+        <canvas id="pieChart"></canvas>
+      </div>
+      <div class="chart-box">
+        <h3>Revenue, Expenses & Profit</h3>
+        <canvas id="barLineChart"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <div id="alert-container"></div>
+  <script src="{% static 'js/common.js' %}"></script>
+  <script src="{% static 'js/dashboard.js' %}"></script>
+</body>
+</html>
+
+
+<script>
+  // Backenddan kelgan dinamik data
+  const backendData = {
+    product_cnt: {{ product_cnt }},
+    stock: {{ stock }},
+    year_total_sales: {{ year_total_sales }},
+    year: {{ year }},
+    pie_labels: {{ pie_labels|safe }},
+    pie_data: {{ pie_data|safe }},
+    months: {{ months|safe }},
+    bar_rev: {{ bar_rev|safe }},
+    bar_cost: {{ bar_cost|safe }},
+    line_profit: {{ line_profit|safe }}
+  };
+</script>

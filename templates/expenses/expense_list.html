@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Expenses</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{% static 'css/common.css' %}">
+  <link rel="stylesheet" href="{% static 'css/expenses.css' %}">
+</head>
+<body>
+  {% include "partials/sidebar.html" %}
+  <main class="expenses-main">
+    <div class="expenses-header">
+      <h1>Expenses</h1>
+      <a href="{% url 'expense_create' %}" class="primary-btn">+ Add Expense</a>
+    </div>
+    <div class="table-tools">
+      <form method="get" style="display:inline;">
+        <input type="text" name="q" value="{{ search_query }}" class="search-input" placeholder="Search by category or product...">        <button type="submit" style="display:none;"></button>
+      </form>
+    </div>
+<table class="table" id="expenseTable">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Category</th>
+      <th>Product</th>  <!-- Qo‘shildi -->
+      <th>Amount</th>
+      <th>Note</th>
+      <th>User</th>
+      <th>Date</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+<tbody>
+  {% for e in expenses %}
+  <tr>
+    <td>{{ forloop.counter }}</td>
+    <td>{{ e.category.name }}</td>
+    <td>{{ e.product.name }}</td>
+    <td>${{ e.amount|floatformat:2 }}</td>
+    <td>{{ e.note|default:"-" }}</td>
+    <td>
+      {% if e.user %}
+        {{ e.user.get_full_name|default:e.user.username }}
+      {% else %}
+        <span style="color: #bbb;">—</span>
+      {% endif %}
+    </td>
+    <td>{{ e.created_at|date:"Y-m-d H:i" }}</td>
+    <td>
+      <div class="actions-cell">
+        <a href="{% url 'expense_edit' e.id %}" class="table-action">Edit</a>
+        <a href="{% url 'expense_delete' e.id %}" class="table-action danger">Delete</a>
+      </div>
+    </td>
+  </tr>
+{% endfor %}
+</tbody>
+</table>
+    <div id="expensePagination" class="pagination">
+      {% if is_paginated %}
+        {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&laquo;</a>
+        {% endif %}
+        {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+            <span class="active">{{ num }}</span>
+          {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+            <a href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{{ num }}</a>
+          {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&raquo;</a>
+        {% endif %}
+      {% endif %}
+    </div>
+  </main>
+  <div id="alert-container"></div>
+  <script src="{% static 'js/common.js' %}"></script>
+  <script src="{% static 'js/expenses.js' %}"></script>
+</body>
+</html>

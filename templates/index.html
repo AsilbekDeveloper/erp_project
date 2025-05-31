@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ERP Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{% static 'css/common.css' %}">
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  {% include "partials/sidebar.html" %}
+
+  <main class="dashboard-main">
+    <section class="dashboard-top">
+      <h1 class="dashboard-title">Dashboard</h1>
+      <form id="statsFilterForm" class="year-filter" method="get" action="">
+        <label for="yearSelect">Year:</label>
+        <select id="yearSelect" name="year" onchange="this.form.submit()">
+          {% for y, y_lbl in filter_form.fields.year.choices %}
+            <option value="{{ y }}" {% if year == y %}selected{% endif %}>{{ y_lbl }}</option>
+          {% endfor %}
+        </select>
+      </form>
+    </section>
+    <section class="kpi-cards">
+      <div class="kpi-card" id="kpi-products">
+        <div class="kpi-label">Products</div>
+        <div class="kpi-value" id="productCnt">{{ product_cnt }}</div>
+      </div>
+      <div class="kpi-card" id="kpi-stock">
+        <div class="kpi-label">Stock</div>
+        <div class="kpi-value" id="stockCnt">{{ stock }}</div>
+      </div>
+      <div class="kpi-card" id="kpi-sales">
+        <div class="kpi-label">Total Sales</div>
+        <div class="kpi-value" id="totalSales">{{ year_total_sales }}</div>
+      </div>
+    </section>
+    <section class="charts-section">
+      <div class="chart-box">
+        <h3>Sales by Category</h3>
+        <canvas id="pieChart"></canvas>
+      </div>
+      <div class="chart-box">
+        <h3>Revenue, Expenses & Profit</h3>
+        <canvas id="barLineChart"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <div id="alert-container"></div>
+  <script>
+    // Contextdan kelgan datalar
+    const months = {{ months|safe }};
+    const pieLabels = {{ pie_labels|safe }};
+    const pieData = {{ pie_data|safe }};
+    const barRev = {{ bar_rev|safe }};
+    const barCost = {{ bar_cost|safe }};
+    const lineProfit = {{ line_profit|safe }};
+  </script>
+  <script src="{% static 'js/common.js' %}"></script>
+  <script src="{% static 'js/dashboard.js' %}"></script>
+</body>
+</html>

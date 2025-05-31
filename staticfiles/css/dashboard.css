@@ -1,0 +1,134 @@
+body {
+  background: #f8fafc;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.dashboard-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1px 16px;
+  margin-left: 233px; /* yoki sidebar width qancha bo‘lsa */
+}
+
+.dashboard-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;  /* <-- E'TIBOR! */
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.dashboard-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #212943;
+}
+
+.year-filter label {
+  font-size: 1.22rem;   /* 1.5rem katta, selectdan baland bo‘lib ketadi. 1.22 yoki 1.25rem ideal */
+  font-weight: 700;
+  margin-right: 10px;
+  margin-bottom: 0;     /* Kerak emas! */
+  display: inline-block;
+}
+
+
+.year-filter select {
+  font-size: 1.1rem;
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: 1.5px solid #2684ff;
+  background: #fff;
+  transition: border 0.2s;
+  height: 40px;   /* Balandlikni ham oshirsa, label bilan bir qatorda chiqadi */
+  line-height: 40px;
+}
+
+.year-filter select:focus {
+  outline: none;
+  border-color: #005dd1;
+  box-shadow: 0 0 0 2px rgba(38,132,255,0.08);
+}
+
+.kpi-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  margin: 25px 0;
+}
+
+.kpi-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 1px 8px rgba(36,37,39,0.06);
+  padding: 22px 28px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.kpi-label {
+  font-size: 1.1rem;
+  color: #9ca3af;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+
+.kpi-value {
+  font-size: 2.1rem;
+  color: #2684ff;
+  font-weight: 600;
+}
+
+.charts-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+
+.chart-box {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 1px 8px rgba(36,37,39,0.06);
+  padding: 10px 50px 28px 28px;
+}
+
+.chart-box h3 {
+  font-size: 1.30rem;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #212943;
+}
+
+/* Alerts */
+#alert-container {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1000;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .charts-section {
+    grid-template-columns: 1fr;
+  }
+  .dashboard-main {
+    padding: 16px 5px;
+  }
+}
+
+@media (max-width: 650px) {
+  .dashboard-title {
+    font-size: 1.4rem;
+  }
+  .kpi-card {
+    padding: 18px 10px;
+  }
+  .charts-section {
+    gap: 16px;
+  }
+}
+
+

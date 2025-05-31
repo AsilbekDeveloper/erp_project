@@ -1,0 +1,159 @@
+name: Django CD
+
+on:
+  push:
+    branches: [ "deploy" ]
+  pull_request:
+    branches: [ "deploy" ]
+
+
+jobs:
+  test-expenses:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt --no-cache-dir
+
+      - name: Run migrations
+        run: python manage.py migrate
+
+      - name: Test accounts apps
+        run: python manage.py test apps/expenses
+
+  test-inventory:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt --no-cache-dir
+
+      - name: Run migrations
+        run: python manage.py migrate
+
+      - name: Test accounts apps
+        run: python manage.py test apps/inventory
+
+  test-sales:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt --no-cache-dir
+
+      - name: Run migrations
+        run: python manage.py migrate
+
+      - name: Test accounts apps
+        run: python manage.py test apps/sales
+
+  test-users:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt --no-cache-dir
+
+      - name: Run migrations
+        run: python manage.py migrate
+
+      - name: Test accounts apps
+        run: python manage.py test apps/users
+
+  test-all:
+    needs:
+      - test-expenses
+      - test-inventory
+      - test-sales
+      - test-users
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt --no-cache-dir
+
+      - name: Run migrations
+        run: python manage.py migrate
+
+      - name: Test accounts apps
+        run: python manage.py test apps
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs:
+      - test-all
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Deploy to production server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{secrets.KEY}}
+          script: |
+            cd /var/www/erp_market_project
+            git config pull.rebase true
+            git pull origin deploy
+            source venv/bin/activate
+            pip install -r requirements.txt
+            python manage.py migrate
+            python manage.py collectstatic --noinput
+            sudo systemctl daemon-reload
+            sudo systemctl restart gunicorn
+            sudo nginx -t && sudo systemctl restart nginx

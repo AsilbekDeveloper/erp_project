@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <title>{% if view.action == 'add' %}Yangi Foydalanuvchi{% else %}Foydalanuvchini Tahrirlash{% endif %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="{% static 'css/common.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/users.css' %}" />
+</head>
+<body>
+  {% include "partials/sidebar.html" %}
+
+  <main class="users-main">
+    <header class="users-header">
+      <h1>
+        {% if view.action == 'add' %}
+          ＋ Yangi Foydalanuvchi
+        {% else %}
+          ✏️ Foydalanuvchini Tahrirlash
+        {% endif %}
+      </h1>
+    </header>
+
+    <section class="form-card">
+      {# Agar formda xatolar bo‘lsa, ularni yuqorida ko‘rsatish uchun ham bo‘sh joy qoldirishimiz mumkin #}
+      {% if form.errors %}
+        <div class="input-error">
+          Iltimos, quyidagi xatolarni tuzating:
+          <ul>
+            {% for field in form %}
+              {% for error in field.errors %}
+                <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+              {% endfor %}
+            {% endfor %}
+            {% for err in form.non_field_errors %}
+              <li>{{ err }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        <div class="form-group">
+          {{ form.username.label_tag }}
+          {{ form.username }}
+          {% if form.username.errors %}
+            <div class="input-error">{{ form.username.errors|striptags }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          {{ form.email.label_tag }}
+          {{ form.email }}
+          {% if form.email.errors %}
+            <div class="input-error">{{ form.email.errors|striptags }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          {{ form.role.label_tag }}
+          {{ form.role }}
+          {% if form.role.errors %}
+            <div class="input-error">{{ form.role.errors|striptags }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          {{ form.phone.label_tag }}
+          {{ form.phone }}
+          {% if form.phone.errors %}
+            <div class="input-error">{{ form.phone.errors|striptags }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          {{ form.password.label_tag }}
+          {{ form.password }}
+          {% if form.password.errors %}
+            <div class="input-error">{{ form.password.errors|striptags }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          {{ form.avatar.label_tag }}
+          {{ form.avatar }}
+          {% if form.avatar.errors %}
+            <div class="input-error">{{ form.avatar.errors|striptags }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Saqlash</button>
+          <a href="{% url 'user_list' %}" class="btn btn-secondary">Bekor Qilish</a>
+        </div>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

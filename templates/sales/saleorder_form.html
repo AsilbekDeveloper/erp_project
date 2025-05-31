@@ -1,0 +1,303 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Sale Order</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{% static 'css/common.css' %}">
+  <link rel="stylesheet" href="{% static 'css/sales.css' %}">
+  <style>
+    .products-table th, .products-table td { padding: 8px 10px; }
+    .products-table { margin-top:12px; width:100%; border-collapse:collapse;}
+    .products-table th { background:#f8fafd; border-bottom:1px solid #e0e7ef;}
+    .products-table td { background:#fff;}
+    .products-table input[type='number'] { width:70px; }
+    .products-table select { min-width:140px;}
+    #totalAmount {font-size:1.18rem; font-weight:600;}
+    .modal { display:none; position:fixed; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.18); z-index:1000; align-items:center; justify-content:center; }
+    .modal-content { background:white; padding:32px; border-radius:12px; min-width:320px; margin:100px auto; position:relative; }
+    .close { position:absolute; right:16px; top:10px; cursor:pointer; font-size:22px; }
+    .form-inline { display:flex; gap:8px; align-items:center; }
+  </style>
+</head>
+<body>
+  {% include "partials/sidebar.html" %}
+  <main class="sales-main">
+    <div class="form-card">
+      <h1>Add Sale Order</h1>
+      <form id="saleOrderForm" method="post" autocomplete="off">
+        {% csrf_token %}
+        <input type="hidden" name="lines-TOTAL_FORMS" id="id_lines-TOTAL_FORMS" value="1">
+        <input type="hidden" name="lines-INITIAL_FORMS" value="0">
+        <input type="hidden" name="lines-MIN_NUM_FORMS" value="0">
+        <input type="hidden" name="lines-MAX_NUM_FORMS" value="1000">
+
+        <div class="form-group">
+          <label>Customer</label>
+          <div class="form-inline">
+            <select id="customerSelect" name="customer" required>
+              <option value="">--------</option>
+              {% for c in customers %}
+              <option value="{{ c.id }}">{{ c }}</option>
+              {% endfor %}
+            </select>
+            <button type="button" class="secondary-btn" id="addCustomerBtn" title="Add customer">+</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Note</label>
+          <input type="text" name="note" id="noteInput">
+        </div>
+        <h3>Products</h3>
+        <table class="products-table" id="productsTable">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Product</th>
+              <th>Qty</th>
+              <th>Unit Price</th>
+              <th>Subtotal</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- JS orqali satrlar qo‘shiladi -->
+          </tbody>
+        </table>
+        <button type="button" class="secondary-btn" id="addProductRowBtn" style="margin-top:14px;">+ Add Product</button>
+        <div style="margin-top:18px;text-align:right">
+          <span>Total: </span>
+          <span id="totalAmount">$0.00</span>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="primary-btn">Save</button>
+          <a href="{% url 'saleorder_list' %}" class="secondary-btn">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- Customer Add Modal -->
+  <div id="customerModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeCustomerModal">&times;</span>
+      <h2>Add Customer</h2>
+      <form id="customerAddForm">
+        <input type="text" id="custFirstName" name="first_name" placeholder="First name" required>
+        <input type="text" id="custLastName" name="last_name" placeholder="Last name">
+        <input type="text" id="custPhone" name="phone" placeholder="Phone">
+        <input type="text" id="custAddress" name="address" placeholder="Address">
+        <button type="submit" class="primary-btn" style="margin-top:10px;">Save</button>
+      </form>
+      <div id="customerModalErr"></div>
+    </div>
+  </div>
+<script>
+  // Django-dan kelyotgan JSON data
+  const categories = {{ categories_json|safe }};
+  const products = {{ products_json|safe }};
+  const table = document.getElementById('productsTable').querySelector('tbody');
+  let formIdx = 0;
+
+  function addProductRow(selectedCategoryId=null, selectedProductId=null, qtyVal=1) {
+    const tr = document.createElement('tr');
+
+    // Category
+    const catSel = document.createElement('select');
+    catSel.innerHTML = '<option value="">Category</option>' + categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+    if (selectedCategoryId) catSel.value = selectedCategoryId;
+
+    // Product
+    const prodSel = document.createElement('select');
+    prodSel.name = `lines-${formIdx}-product`;
+    prodSel.required = true;
+    prodSel.innerHTML = '<option value="">Product</option>';
+    prodSel.style.minWidth = '140px';
+
+    // Qty
+    const qty = document.createElement('input');
+    qty.type = 'number';
+    qty.name = `lines-${formIdx}-quantity`;
+    qty.required = true;
+    qty.min = 1;
+    qty.value = qtyVal;
+
+    // Unit Price (readonly, lekin POST uchun yashirin input ham bo‘ladi)
+    const priceSpan = document.createElement('span');
+    priceSpan.innerText = '-';
+
+    const priceInput = document.createElement('input');
+    priceInput.type = 'number';
+    priceInput.name = `lines-${formIdx}-price`;
+    priceInput.readOnly = true;
+    priceInput.step = '0.01';
+    priceInput.style.display = "none";
+
+    // Subtotal (faqat ko‘rsatish uchun)
+    const subtotal = document.createElement('span');
+    subtotal.innerText = '-';
+
+    // Remove btn
+    const rmBtn = document.createElement('button');
+    rmBtn.type = 'button';
+    rmBtn.innerText = '✕';
+    rmBtn.className = 'danger';
+    rmBtn.onclick = () => {
+      tr.remove();
+      updateTotal();
+      updateIndexes();
+    };
+
+    // Category tanlaganda productlar chiqadi
+    catSel.onchange = function() {
+      prodSel.innerHTML = '<option value="">Product</option>';
+      if (catSel.value) {
+        const filtered = products.filter(p => p.category_id == catSel.value);
+        prodSel.innerHTML += filtered.map(
+          p => `<option value="${p.id}" data-price="${p.sell_price}">${p.name}</option>`
+        ).join('');
+      }
+      priceSpan.innerText = '-';
+      priceInput.value = '';
+      subtotal.innerText = '-';
+      qty.value = 1;
+      updateTotal();
+    };
+
+    // Product select o‘zgarsa
+    prodSel.onchange = function() {
+      const p = products.find(p => p.id == prodSel.value);
+      if (p) {
+        priceSpan.innerText = '$' + (+p.sell_price).toFixed(2);
+        priceInput.value = (+p.sell_price).toFixed(2); // POST uchun
+        subtotal.innerText = '$' + (qty.value * p.sell_price).toFixed(2);
+      } else {
+        priceSpan.innerText = '-';
+        priceInput.value = '';
+        subtotal.innerText = '-';
+      }
+      updateTotal();
+    };
+
+    // Quantity o‘zgarsa
+    qty.oninput = function() {
+      const p = products.find(p => p.id == prodSel.value);
+      if (p) subtotal.innerText = '$' + (qty.value * p.sell_price).toFixed(2);
+      else subtotal.innerText = '-';
+      updateTotal();
+    };
+
+    // Qatorni yaratish va joylash
+    [catSel, prodSel, qty,
+      (() => { // Unit Price (readonly) + input
+        const wrapper = document.createElement('div');
+        wrapper.style.position = 'relative';
+        wrapper.appendChild(priceSpan);
+        wrapper.appendChild(priceInput);
+        return wrapper;
+      })(),
+      subtotal, rmBtn
+    ].forEach(e => {
+      const td = document.createElement('td');
+      td.appendChild(e);
+      tr.appendChild(td);
+    });
+    table.appendChild(tr);
+
+    // Row uchun index boshqaruvi
+    formIdx += 1;
+    document.getElementById('id_lines-TOTAL_FORMS').value = formIdx;
+
+    // Dastlabki qiymat
+    if (selectedCategoryId) catSel.dispatchEvent(new Event('change'));
+    if (selectedProductId) {
+      prodSel.value = selectedProductId;
+      prodSel.dispatchEvent(new Event('change'));
+    }
+  }
+
+  // Row o‘chirilganda indexlarni qayta nomlash
+  function updateIndexes() {
+    let idx = 0;
+    table.querySelectorAll('tr').forEach(tr => {
+      tr.querySelector('select[name$="-product"]').name = `lines-${idx}-product`;
+      tr.querySelector('input[type=number][name$="-quantity"]').name = `lines-${idx}-quantity`;
+      tr.querySelector('input[type=number][name$="-price"]').name = `lines-${idx}-price`;
+      idx++;
+    });
+    formIdx = idx;
+    document.getElementById('id_lines-TOTAL_FORMS').value = idx;
+  }
+
+  document.getElementById('addProductRowBtn').onclick = () => addProductRow();
+
+  function updateTotal() {
+    let total = 0;
+    table.querySelectorAll('tr').forEach(row => {
+      const subtotalCell = row.querySelector('td:nth-child(5) span');
+      if (subtotalCell && subtotalCell.innerText.startsWith('$')) {
+        const value = parseFloat(subtotalCell.innerText.replace('$', ''));
+        if (!isNaN(value)) total += value;
+      }
+    });
+    document.getElementById('totalAmount').innerText = '$' + total.toFixed(2);
+  }
+
+  // Initial birinchi row
+  addProductRow();
+
+  // ===== CUSTOMER ADD MODAL LOGIC =====
+  document.getElementById('addCustomerBtn').onclick = function() {
+    document.getElementById('customerModal').style.display = "flex";
+  }
+  document.getElementById('closeCustomerModal').onclick = function() {
+    document.getElementById('customerModal').style.display = "none";
+    document.getElementById('customerModalErr').innerText = '';
+    document.getElementById('customerAddForm').reset();
+  }
+  document.getElementById('customerModal').onclick = function(e) {
+    if (e.target === this) this.style.display = 'none';
+  };
+  document.getElementById('customerAddForm').onsubmit = function(e) {
+    e.preventDefault();
+    var form = this;
+    var errDiv = document.getElementById('customerModalErr');
+    errDiv.innerText = '';
+    var data = new FormData(form);
+    fetch("{% url 'ajax_add_customer' %}", {
+      method: 'POST',
+      headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value },
+      body: data
+    })
+    .then(r => r.json())
+    .then(json => {
+      if (json.success) {
+        let sel = document.getElementById('customerSelect');
+        let opt = document.createElement("option");
+        opt.value = json.id;
+        opt.text = json.name;
+        opt.selected = true;
+        sel.add(opt);
+        document.getElementById('customerModal').style.display = "none";
+        form.reset();
+      } else {
+        errDiv.innerText = json.error || "Error";
+      }
+    }).catch(() => errDiv.innerText = "Network error");
+  };
+
+    // Formsetdan backend orqali har bir rowni olib, JS array ga serialize qilamiz
+  const initialRows = [
+    {% for form in formset.forms %}
+      {
+        category_id: "{{ form.initial.product.category.id }}",
+        product_id: "{{ form.initial.product.id }}",
+        qty: "{{ form.initial.quantity }}",
+        price: "{{ form.initial.price }}"
+      },
+    {% endfor %}
+  ];
+</script>
+</body>
+</html>
