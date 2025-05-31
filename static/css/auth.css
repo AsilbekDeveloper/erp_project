@@ -1,65 +1,110 @@
+/* Base dark blue theme background */
 .auth-bg {
   min-height: 100vh;
-  background: linear-gradient(115deg, #f7fafc 60%, #dbeafe 100%);
+  background: linear-gradient(135deg, #0f172a, #1e293b);
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 20px;
 }
+
+/* Container styling */
 .auth-container {
-  background: #fff;
-  box-shadow: 0 2px 16px rgba(36,37,39,0.11);
+  background: #1e293b;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
   border-radius: 15px;
-  padding: 38px 32px 32px 32px;
-  max-width: 380px;
+  padding: 40px 30px;
+  max-width: 400px;
   width: 100%;
+  transition: transform 0.3s;
 }
+
+.auth-container:hover {
+  transform: scale(1.02);
+}
+
+/* Title styling */
 .auth-title {
-  margin-bottom: 28px;
+  margin-bottom: 25px;
   text-align: center;
-  font-size: 1.7rem;
-  color: #2563eb;
+  font-size: 1.8rem;
+  color: #60a5fa;
   letter-spacing: 1px;
+  font-weight: bold;
 }
+
+/* Form group */
 .auth-group {
-  margin-bottom: 21px;
+  margin-bottom: 20px;
 }
+
+/* Label */
 .auth-group label {
-  font-size: 1.03rem;
+  font-size: 1rem;
   font-weight: 500;
-  margin-bottom: 8px;
+  color: #e2e8f0;
   display: block;
+  margin-bottom: 6px;
 }
+
+/* Input */
 .auth-group input {
   width: 100%;
-  padding: 11px 12px;
-  font-size: 1.05rem;
-  border-radius: 7px;
-  border: 1px solid #d3d3e4;
-  background: #f8fafc;
-  transition: border 0.2s;
+  padding: 12px 14px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: #f1f5f9;
+  transition: border 0.3s, background 0.3s;
 }
+
 .auth-group input:focus {
-  border-color: #2563eb;
+  border-color: #3b82f6;
+  background: #1e293b;
   outline: none;
 }
+
+/* Button */
 .auth-btn {
   width: 100%;
-  background: #2563eb;
-  color: #fff;
+  background: #3b82f6;
+  color: #ffffff;
   border: none;
-  padding: 11px 0;
-  font-size: 1.15rem;
+  padding: 12px;
+  font-size: 1.1rem;
   font-weight: 600;
-  border-radius: 7px;
-  margin-top: 7px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.18s;
+  transition: background 0.25s ease;
 }
+
 .auth-btn:hover {
-  background: #11376b;
+  background: #2563eb;
 }
+
+/* Error message */
 .input-error {
-  color: #e74c3c;
-  font-size: 0.98rem;
-  margin-top: 3px;
+  color: #f87171;
+  font-size: 0.95rem;
+  background-color: #1f2937;
+  padding: 8px 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  border-left: 4px solid #dc2626;
+}
+
+/* Responsive tweaks */
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 30px 20px;
+  }
+
+  .auth-title {
+    font-size: 1.5rem;
+  }
+
+  .auth-btn {
+    font-size: 1rem;
+  }
 }
